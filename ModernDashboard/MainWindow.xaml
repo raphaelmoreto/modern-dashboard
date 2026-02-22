@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:local="clr-namespace:ModernDashboard"
+    xmlns:vm="clr-namespace:ModernDashboard.ViewModel"
     mc:Ignorable="d"
     Title="MainWindow"
     Height="580"
@@ -16,14 +16,122 @@
     Background="Transparent"
     AllowsTransparency="True"
 >
+    <Window.DataContext>
+        <vm:NavigationViewModel />
+    </Window.DataContext>
+    
     <Grid>
         
         <!--BACKGROUND BORDER-->
         <Border
             Background="#ECF0F1"
             CornerRadius="10"
+        />
+        
+        <!--HEADER-->
+        <Border
+            Background="#5C5C5C"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            CornerRadius="10,0,100,0"
+            Height="80"
+            Width="850"
         >
+            <TextBlock Text="C# DESIGN PRO" Style="{StaticResource HeaderStyle}" />
         </Border>
         
+        <!--FOOTER-->
+        <Border
+            Background="#5C5C5C"
+            VerticalAlignment="Bottom"
+            HorizontalAlignment="Right"
+            CornerRadius="100,0,10,0"
+            Height="80"
+            Width="850"
+        >
+            <TextBlock Text="DESIGN THE INTERFACE" Style="{StaticResource FooterStyle}" />
+        </Border>
+
+        <!--CONTENT BACKGROUND-->
+        <Border 
+            Background="#303030"
+            BorderBrush="#FFFFFF"
+            BorderThickness="0,5,0,5"
+            Height="480"
+            Margin="0,10,0,0"
+            CornerRadius="25"
+        />
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25" />
+                <ColumnDefinition Width="180" />
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="660" />
+                <ColumnDefinition Width="25" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0" />
+                <RowDefinition Height="80" />
+                <RowDefinition Height="55" />
+                <RowDefinition Height="370" />
+                <RowDefinition Height="0" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="2" Grid.Column="1">
+                <TextBox
+                    x:Name="SearchBox"
+                    Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource SearchBoxStyle}"
+                />
+
+                <TextBlock Text="Search" Style="{StaticResource SearchTextStyle}" />
+            </Grid>
+
+            <!--Menu-->
+            <Grid Grid.Row="3" Grid.Column="1" Margin="0,10,0,0">
+                <ItemsControl ItemsSource="{Binding SourceCollection}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <RadioButton 
+                                    Content="{Binding MenuName}"
+                                    Tag="{Binding MenuImage}"
+                                    CommandParameter="{Binding MenuName}"
+                                    Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}, Path=DataContext.MenuCommand}"
+                                    Style="{StaticResource MenuButtonStyle}"
+                                    GroupName="MenuGroup"
+                                />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+
+            <Grid
+                Grid.Row="2"
+                Grid.Column="3"
+                Grid.RowSpan="2"
+                Background="Transparent"
+            >
+                <ContentControl
+                    x:Name="Pages"
+                    Content="{Binding SelectedViewModel}"
+                />
+            </Grid>
+        </Grid>
+
+        <Button 
+            Height="50"
+            Width="50"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Command="{Binding CloseAppCommand}"
+            CommandParameter="{Binding ElementName=DashboardWindow}"
+            Margin="0,5,20,0"
+            Style="{StaticResource CloseBtn_Style}"
+        />
+
     </Grid>
 </Window>
